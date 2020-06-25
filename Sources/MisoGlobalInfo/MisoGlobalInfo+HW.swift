@@ -12,16 +12,16 @@ import Foundation
 public extension GlobalInfo {
     struct HW {
         public static var modelIdentifier: String? {
-            var mib: [CInt] = [CTL_HW, HW_MACHINE]
-            var size: Int = 0
-            if sysctl(&mib, CUnsignedInt(mib.count), nil, &size, nil, 0) != 0 {
-                return nil
-            }
-            if size < 1 || size > 64 {
+            var mib = [CTL_HW, HW_MACHINE]
+            var size = 0
+            guard sysctl(&mib, CUnsignedInt(mib.count), nil, &size, nil, 0) == 0,
+                  size > 0 && size <= 64 else {
                 return nil
             }
             var resultPtr = [CChar](repeating: 0, count: size)
-            if sysctl(&mib, CUnsignedInt(mib.count), &resultPtr, &size, nil, 0) != 0 {
+            guard sysctl(&mib, CUnsignedInt(mib.count), &resultPtr, &size, nil, 0) == 0,
+                  size > 0 && size <= resultPtr.count,
+                  resultPtr[size - 1] == 0 else {
                 return nil
             }
             return String(cString: resultPtr)
