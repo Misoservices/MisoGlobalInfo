@@ -25,6 +25,9 @@ Instead of searching everywhere for the most used variables, these are provided 
 - App store receipt retrieval: `GlobalInfo.App.appStoreReceiptURL`,  `GlobalInfo.App.hasAppStoreReceipt` and `GlobalInfo.App.appStoreReceipt`
 - identifierForVendor's UUID retrieval (not for advertisements): `GlobalInfo.OS.uuid`
 
+### macOS 11 / iOS 14 Logger support
+
+- Defines the `subsystem` as the `bundleIdentifier` automatically. Simply create your logger with the category: `Logger(category: "SomeCategory")` 
 
 ## Colophon
 
