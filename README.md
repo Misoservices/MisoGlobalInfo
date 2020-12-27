@@ -10,6 +10,7 @@ Instead of searching everywhere for the most used variables, these are provided 
 - Copyright: `GlobalInfo.App.copyright`
 - Identifier: `GlobalInfo.App.bundleIdentifier`
 - Version: `GlobalInfo.App.bundleShortVersion`,  `GlobalInfo.App.bundleVersion`, and `GlobalInfo.App.bundleVersionAsInt`.
+- Environment: `GlobalInfo.App.isiOSOnMac`, `GlobalInfo.App.isMacCatalyst`, `GlobalInfo.App.isMacAppleSiliconNativeCode`.
 
 ### Hardware environment
 
@@ -22,12 +23,29 @@ Instead of searching everywhere for the most used variables, these are provided 
 
 ### App store receipt validation
 
-- App store receipt retrieval: `GlobalInfo.App.appStoreReceiptURL`,  `GlobalInfo.App.hasAppStoreReceipt` and `GlobalInfo.App.appStoreReceipt`
+- App store receipt retrieval: `GlobalInfo.App.appStoreReceiptURL` and `GlobalInfo.App.appStoreReceipt`
 - identifierForVendor's UUID retrieval (not for advertisements): `GlobalInfo.OS.uuid`
 
 ### macOS 11 / iOS 14 Logger support
 
 - Defines the `subsystem` as the `bundleIdentifier` automatically. Simply create your logger with the category: `Logger(category: "SomeCategory")` 
+
+## Version History
+
+### 1.0.2
+
+- Added version history.
+- OSS-69 Removed `GlobalInfo.App.hasAppStoreReceipt` as it breaks Apple suggestion for file retrieval's good practice. `Data` will return `nil` if invalid.
+- OSS-70 Added macOS app environment information (running an iOS app on Mac, running on Mac Catalyst, running an Apple Silicon native version).
+
+### 1.0.1
+
+- OSS-68 Added simple `Logger` for macOS 11 / IOS 14
+- OSS-67 Improved `sysctl` calls for macOS
+
+### 1.0.0
+
+- Initial Revision
 
 ## Colophon
 

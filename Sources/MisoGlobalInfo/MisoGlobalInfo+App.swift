@@ -9,6 +9,10 @@
 
 import Foundation
 
+#if canImport(AppKit)
+import AppKit
+#endif
+
 public extension GlobalInfo {
     struct App {
         public static var displayName: String? {
@@ -42,20 +46,37 @@ public extension GlobalInfo {
             Bundle.main.appStoreReceiptURL
         }
         
-        public static var hasAppStoreReceipt: Bool {
-            if let appStoreReceiptURL = Self.appStoreReceiptURL,
-                let isReachable = try? appStoreReceiptURL.checkResourceIsReachable() {
-                return isReachable
-            }
-            return false
-        }
-        
         public static var appStoreReceipt: Data? {
-            if Self.hasAppStoreReceipt,
-                let appStoreReceiptURL = Self.appStoreReceiptURL {
-                return try? Data(contentsOf: appStoreReceiptURL)
+            guard let appStoreReceiptURL = Self.appStoreReceiptURL else {
+                return nil
             }
-            return nil
+            return try? Data(contentsOf: appStoreReceiptURL)
+        }
+
+        public static var isiOSOnMac: Bool {
+            guard #available(iOS 14.0, macOS 11.0, watchOS 7.0, tvOS 14.0, *) else {
+                return false
+            }
+            return ProcessInfo.processInfo.isiOSAppOnMac
+        }
+
+        public static var isMacCatalyst: Bool {
+            guard #available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 99.99, *) else {
+                return false
+            }
+            return ProcessInfo.processInfo.isMacCatalystApp
+        }
+
+        public static var isMacAppleSiliconNativeCode: Bool {
+            #if !os(macOS) || targetEnvironment(macCatalyst)
+                return false
+            #else
+                guard #available(macOS 11.0, *) else {
+                    return false
+                }
+                let current = NSRunningApplication.current
+                return current.executableArchitecture == NSBundleExecutableArchitectureARM64
+            #endif
         }
     }
 }
