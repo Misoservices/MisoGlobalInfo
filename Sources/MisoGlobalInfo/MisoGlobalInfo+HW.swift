@@ -46,7 +46,7 @@ public extension GlobalInfo {
                 return .unknown
             }
             
-            if modelIdentifier == "x86_64" || modelIdentifier == "i386" {
+            if modelIdentifier == "x86_64" || modelIdentifier == "i386" || modelIdentifier == "arm64" {
                 if let simulatorModelIdentifier = self.simulatorModelIdentifier {
                     modelIdentifier = simulatorModelIdentifier
                 } else {
