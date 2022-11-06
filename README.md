@@ -28,9 +28,14 @@ Instead of searching everywhere for the most used variables, these are provided 
 
 ### macOS 11 / iOS 14 Logger support
 
-- Defines the `subsystem` as the `bundleIdentifier` automatically. Simply create your logger with the category: `Logger(category: "SomeCategory")` 
+- Defines the `subsystem` as the `bundleIdentifier` automatically. Simply create your logger with the category: `Logger(category: "SomeCategory")`
+- Defines the `subsystem` as well as the `category` automatically from the file name: `Logger(file: #file)`
 
 ## Version History
+
+### 1.0.3
+
+- OSS-72 Added `Logger(file: #file)` simplification
 
 ### 1.0.2
 

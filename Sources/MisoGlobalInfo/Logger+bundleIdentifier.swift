@@ -9,11 +9,15 @@
 
 
 import os
+import Foundation
 
 @available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *)
 public extension Logger {
     init(category: String) {
         self.init(subsystem: GlobalInfo.App.bundleIdentifier ?? "No bundleIdentifier",
                   category: category)
+    }
+    init(file: String) {
+        self.init(category: URL(string: file)?.deletingPathExtension().lastPathComponent ?? "No filename")
     }
 }
