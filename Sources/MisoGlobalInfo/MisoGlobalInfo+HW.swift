@@ -28,7 +28,7 @@ public extension GlobalInfo {
         }
         
         public static var simulatorModelIdentifier: String? {
-            ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"]
+            ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"]
         }
 
         public enum Family {

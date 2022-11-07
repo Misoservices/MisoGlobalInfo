@@ -78,5 +78,13 @@ public extension GlobalInfo {
                 return current.executableArchitecture == NSBundleExecutableArchitectureARM64
             #endif
         }
+
+        public static var isPreview: Bool {
+            ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+        }
+
+        public static var isRunningTests: Bool {
+            ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+        }
     }
 }

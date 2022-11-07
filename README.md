@@ -11,6 +11,7 @@ Instead of searching everywhere for the most used variables, these are provided 
 - Identifier: `GlobalInfo.App.bundleIdentifier`
 - Version: `GlobalInfo.App.bundleShortVersion`,  `GlobalInfo.App.bundleVersion`, and `GlobalInfo.App.bundleVersionAsInt`.
 - Environment: `GlobalInfo.App.isiOSOnMac`, `GlobalInfo.App.isMacCatalyst`, `GlobalInfo.App.isMacAppleSiliconNativeCode`.
+- Execution environment: `GlobalInfo.App.isPreview`, `GlobalInfo.App.isRunningTests`
 
 ### Hardware environment
 
@@ -32,6 +33,10 @@ Instead of searching everywhere for the most used variables, these are provided 
 - Defines the `subsystem` as well as the `category` automatically from the file name: `Logger(file: #file)`
 
 ## Version History
+
+### 1.0.4
+
+- OSS-73 Added isPreview and isRunningTests to App
 
 ### 1.0.3
 
