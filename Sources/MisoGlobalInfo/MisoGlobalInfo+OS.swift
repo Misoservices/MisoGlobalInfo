@@ -3,7 +3,7 @@
 //  MisoGlobalInfo
 //
 //  Created by Michel Donais on 2020-02-25.
-//  Copyright © 2019-2020 Misoservices Inc. All rights reserved.
+//  Copyright © 2019-2023 Misoservices Inc. All rights reserved.
 //  [BSL-1.0] This package is Licensed under the Boost Software License - Version 1.0
 //
 
@@ -19,16 +19,62 @@ import UIKit
 
 public extension GlobalInfo {
     struct OS {
-        public static var majorVersion: Int {
+        public static var localizedVersion: String {
+            ProcessInfo.processInfo.operatingSystemVersionString
+        }
+
+        public static let majorVersion: Int = {
             #if os(macOS)
             return ProcessInfo.processInfo.operatingSystemVersion.majorVersion
-            #elseif os(watchOS)
-            return Int(Float(WKInterfaceDevice.current().systemVersion) ?? 0.0)
             #else
-            return Int(Float(UIDevice.current.systemVersion) ?? 0.0)
+
+            #if os(watchOS)
+            let components = WKInterfaceDevice.current().systemVersion.components(separatedBy: ".")
+            #else
+            let components = UIDevice.current.systemVersion.components(separatedBy: ".")
             #endif
-        }
-        
+            guard components.count > 0 else {
+                return 0
+            }
+            return Int(components[0]) ?? 0
+            #endif
+        }()
+
+        public static let minorVersion: Int = {
+            #if os(macOS)
+            return ProcessInfo.processInfo.operatingSystemVersion.minorVersion
+            #else
+
+            #if os(watchOS)
+            let components = WKInterfaceDevice.current().systemVersion.components(separatedBy: ".")
+            #else
+            let components = UIDevice.current.systemVersion.components(separatedBy: ".")
+            #endif
+            guard components.count > 1 else {
+                return 0
+            }
+            return Int(components[1]) ?? 0
+            #endif
+        }()
+
+        public static let patchVersion: Int? = {
+            #if os(macOS)
+            let patch = ProcessInfo.processInfo.operatingSystemVersion.patchVersion
+            return patch > 0 ? patch : nil
+            #else
+
+            #if os(watchOS)
+            let components = WKInterfaceDevice.current().systemVersion.components(separatedBy: ".")
+            #else
+            let components = UIDevice.current.systemVersion.components(separatedBy: ".")
+            #endif
+            guard components.count > 2 else {
+                return nil
+            }
+            return Int(components[2])
+            #endif
+        }()
+
         // From Apple documentation:
         // When implementing a system for serving advertisements, use the value in the
         // advertisingIdentifier property of the ASIdentifierManager class instead of this
@@ -36,7 +82,7 @@ public extension GlobalInfo {
         // in the class discussion for the proper use of that identifier. For more
         // information, see ASIdentifierManager.
         @available(watchOS 6.2, *)
-        public static var uuid: Data? {
+        public static let uuid: Data? = {
             #if os(macOS)
             
             // https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateLocally.html
@@ -84,7 +130,7 @@ public extension GlobalInfo {
             return Data(bytes: addr, count: 16)
 
             #endif
-        }
+        }()
 
     }
 }

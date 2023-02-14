@@ -12,27 +12,48 @@ Instead of searching everywhere for the most used variables, these are provided 
 - Version: `GlobalInfo.App.bundleShortVersion`,  `GlobalInfo.App.bundleVersion`, and `GlobalInfo.App.bundleVersionAsInt`.
 - Environment: `GlobalInfo.App.isiOSOnMac`, `GlobalInfo.App.isMacCatalyst`, `GlobalInfo.App.isMacAppleSiliconNativeCode`.
 - Execution environment: `GlobalInfo.App.isPreview`, `GlobalInfo.App.isRunningTests`
+- Build architecture: `GlobalInfo.App.buildArchitecture`
+
+### Main app's argument parsing
+
+- Argument detection: `GlobalInfo.App.hasArgument`
+- Argument value retrieval: `GlobalInfo.App.argumentValue`
+- Process Path: `GlobalInfo.App.processPathName`
 
 ### Hardware environment
 
+- Device architecture: `GlobalInfo.HW.architecture`
+- Device is a Simulator: `GlobalInfo.HW.isSimulator`
 - Device code name: `GlobalInfo.HW.modelIdentifier`, `GlobalInfo.HW.simulatorModelIdentifier`
 - Device family name (iPhone, iPad, ...): `GlobalInfo.HW.family`
 
 ### Software environment
 
-- OS version: `GlobalInfo.OS.majorVersion`
+- OS version (localized): `GlobalInfo.OS.localizedVersion`
+- OS version: `GlobalInfo.OS.majorVersion`, `GlobalInfo.OS.minorVersion`, `GlobalInfo.OS.patchVersion`
 
 ### App store receipt validation
 
 - App store receipt retrieval: `GlobalInfo.App.appStoreReceiptURL` and `GlobalInfo.App.appStoreReceipt`
-- identifierForVendor's UUID retrieval (not for advertisements): `GlobalInfo.OS.uuid`
+- identifierForVendor's UUID retrieval (not for advertisement): `GlobalInfo.OS.uuid`
 
 ### macOS 11 / iOS 14 Logger support
 
-- Defines the `subsystem` as the `bundleIdentifier` automatically. Simply create your logger with the category: `Logger(category: "SomeCategory")`
+- Defines the `subsystem` as the `bundleIdentifier` automatically. Simply create your logger with the
+  category: `Logger(category: "SomeCategory")`
 - Defines the `subsystem` as well as the `category` automatically from the file name: `Logger(file: #file)`
+- Sends a one-liner on the current app execution context. Useful at app startup: `Logger.logAppContext()` and
+  `Logger.logAppContextOnce()`
 
 ## Version History
+
+### 1.0.5
+
+- OSS-74 Execute complex operations only once
+- OSS-75 Add one-liner app info logging
+- OSS-76 Add command-line arguments parsing
+- OSS-77 Add Rosetta detection
+- OSS-78 Add OS version detection
 
 ### 1.0.4
 

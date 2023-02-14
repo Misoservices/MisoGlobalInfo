@@ -3,15 +3,23 @@
 //  MisoGlobalInfo
 //
 //  Created by Michel Donais on 2019-11-25.
-//  Copyright © 2019-2020 Misoservices Inc. All rights reserved.
+//  Copyright © 2019-2023 Misoservices Inc. All rights reserved.
 //  [BSL-1.0] This package is Licensed under the Boost Software License - Version 1.0
 //
 
 import Foundation
+import MachO
 
 public extension GlobalInfo {
     struct HW {
-        public static var modelIdentifier: String? {
+        public static let architecture: String? = {
+            guard let arch = NXGetLocalArchInfo().pointee.name else {
+                return nil
+            }
+            return String(cString: arch)
+        }()
+
+        public static let modelIdentifier: String? = {
             var mib = [CTL_HW, HW_MACHINE]
             var size = 0
             guard sysctl(&mib, CUnsignedInt(mib.count), nil, &size, nil, 0) == 0,
@@ -25,8 +33,16 @@ public extension GlobalInfo {
                 return nil
             }
             return String(cString: resultPtr)
+        }()
+
+        public static var isSimulator: Bool {
+            #if targetEnvironment(simulator)
+            return true
+            #else
+            return false
+            #endif
         }
-        
+
         public static var simulatorModelIdentifier: String? {
             ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"]
         }
@@ -41,13 +57,13 @@ public extension GlobalInfo {
             case watch
         }
         
-        public static var family: Family {
+        public static let family: Family = {
             guard var modelIdentifier = Self.modelIdentifier else {
                 return .unknown
             }
             
             if modelIdentifier == "x86_64" || modelIdentifier == "i386" || modelIdentifier == "arm64" {
-                if let simulatorModelIdentifier = self.simulatorModelIdentifier {
+                if let simulatorModelIdentifier = simulatorModelIdentifier {
                     modelIdentifier = simulatorModelIdentifier
                 } else {
                     return .mac
@@ -69,6 +85,6 @@ public extension GlobalInfo {
             } else {
                 return .unknown
             }
-        }
+        }()
     }
 }
