@@ -30,21 +30,21 @@ public extension Logger {
             patchVersionString = nil
         }
         logger.info("""
-            \(GlobalInfo.App.displayName ?? GlobalInfo.App.processPathName ?? "[no process info]", privacy: .public) \
-            \(GlobalInfo.App.bundleShortVersion ?? "[no version]", privacy: .public) \
-            (\(GlobalInfo.App.bundleVersionAsInt), privacy: .public) \
-            (\(GlobalInfo.App.buildArchitecture ?? "[Unknown architecture], privacy: .public") \
-            \(GlobalInfo.App.isRunningTests ? ", XCTest" : "", privacy: .public) \
-            \(GlobalInfo.App.isPreview ? ", Preview" : "", privacy: .public) \
-            \(GlobalInfo.App.isMacCatalyst ? ", Mac Catalyst" : "", privacy: .public) \
-            \(GlobalInfo.App.isRosetta ?? false) ? ", Rosetta" : "", privacy: .public)) \
-            on \(GlobalInfo.HW.isSimulator ? "Simulated " : "", privacy: .public)\
-            \(GlobalInfo.HW.modelIdentifier ?? "[Unknown model]", privacy: .public)
-            (\(GlobalInfo.HW.architecture ?? "Unknown architecture", privacy: .public)) \
-            running \(GlobalInfo.OS.localizedVersion, privacy: .public) \
-            [\(GlobalInfo.OS.majorVersion, privacy: .public)\
-            .\(GlobalInfo.OS.minorVersion, privacy: .public)\
-            .\(patchVersionString ?? "", privacy: .public)]
+        \(GlobalInfo.App.displayName ?? GlobalInfo.App.processPathName ?? "[no process info]", privacy: .public) \
+        \(GlobalInfo.App.bundleShortVersion ?? "[no version]", privacy: .public) \
+        (\(GlobalInfo.App.bundleVersionAsInt, privacy: .public)) \
+        (\(GlobalInfo.App.buildArchitecture ?? "[Unknown architecture], privacy: .public") \
+        \(GlobalInfo.App.isRunningTests ? ", XCTest" : "", privacy: .public) \
+        \(GlobalInfo.App.isPreview ? ", Preview" : "", privacy: .public) \
+        \(GlobalInfo.App.isMacCatalyst ? ", Mac Catalyst" : "", privacy: .public) \
+        \((GlobalInfo.App.isRosetta ?? false) ? ", Rosetta" : "", privacy: .public)) \
+        on \(GlobalInfo.HW.isSimulator ? "Simulated " : "", privacy: .public)\
+        \(GlobalInfo.HW.modelIdentifier ?? "[Unknown model]", privacy: .public)
+        (\(GlobalInfo.HW.architecture ?? "Unknown architecture", privacy: .public)) \
+        running \(GlobalInfo.OS.localizedVersion, privacy: .public) \
+        [\(GlobalInfo.OS.majorVersion, privacy: .public)\
+        .\(GlobalInfo.OS.minorVersion, privacy: .public)\
+        \(patchVersionString ?? "", privacy: .public)]
         """)
     }
 
