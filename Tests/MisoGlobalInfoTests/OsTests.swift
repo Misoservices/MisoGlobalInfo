@@ -11,7 +11,7 @@ import XCTest
 final class OsTests: XCTestCase {
     func testVersion() throws {
         XCTAssertFalse(GlobalInfo.OS.localizedVersion.isEmpty)
-        XCTAssertNotEqual(0, GlobalInfo.OS.majorVersion)
+        XCTAssertNotEqual(GlobalInfo.OS.majorVersion, 0)
         let _ = GlobalInfo.OS.minorVersion
         let _ = GlobalInfo.OS.patchVersion
     }

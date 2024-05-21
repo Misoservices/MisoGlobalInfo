@@ -39,8 +39,9 @@ public extension Logger {
         \(GlobalInfo.App.isMacCatalyst ? ", Mac Catalyst" : "", privacy: .public)\
         \((GlobalInfo.App.isRosetta ?? false) ? ", Rosetta" : "", privacy: .public)) \
         on \(GlobalInfo.HW.isSimulator ? "Simulated " : "", privacy: .public)\
-        \(GlobalInfo.HW.modelIdentifier ?? "[Unknown model]", privacy: .public) \
-        running \(GlobalInfo.OS.localizedVersion, privacy: .public) \
+        \(GlobalInfo.HW.family, privacy: .public) \
+        [\(GlobalInfo.HW.modelIdentifier ?? "Unknown model", privacy: .public)] \
+        running OS \(GlobalInfo.OS.localizedVersion, privacy: .public) \
         [\(GlobalInfo.OS.majorVersion, privacy: .public)\
         .\(GlobalInfo.OS.minorVersion, privacy: .public)\
         \(patchVersionString ?? "", privacy: .public)]

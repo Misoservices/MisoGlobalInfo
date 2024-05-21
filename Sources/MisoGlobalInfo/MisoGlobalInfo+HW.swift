@@ -12,6 +12,64 @@ import MachO
 
 public extension GlobalInfo {
     struct HW {
+        public enum Family: CustomStringConvertible {
+            case unknown
+            case airPods
+            case airTag
+            case appleTV
+            case appleVision
+            case homePod
+            case mac
+            case iPad
+            case iPhone
+            case iPod
+            case virtualMachine
+            case watch
+
+            public var description: String {
+                switch self {
+                    case .unknown: return "Unknown"
+                    case .airPods: return "AirPods"
+                    case .airTag: return "AirTag"
+                    case .appleTV: return "AppleTV"
+                    case .appleVision: return "AppleVision"
+                    case .homePod: return "HomePod"
+                    case .mac: return "Mac"
+                    case .iPad: return "iPad"
+                    case .iPhone: return "iPhone"
+                    case .iPod: return "iPod"
+                    case .virtualMachine: return "Virtual Machine"
+                    case .watch: return "AppleWatch"
+                }
+            }
+
+            init?(from model: String?) {
+                guard let model = model else {
+                    return nil
+                }
+                switch model.prefix(4) {
+                    case "AirP", "iPro": self = .airPods
+                    case "AirT": self = .airTag
+                    case "Appl": self = .appleTV
+                    case "Audi": self = .homePod
+                    case "iPad": self = .iPad
+                    case "iPho": self = .iPhone
+                    case "iPod": self = .iPod
+                    case "MacV": self = .virtualMachine
+                    case "Real": self = .appleVision
+                    case "Watc": self = .watch
+
+                    case "x86_", "i386", "arm6": self = .mac
+                    default:
+                        if model.contains("Mac") {
+                            self = .mac
+                        } else {
+                            self = .unknown
+                        }
+                }
+            }
+        }
+
         public static let modelIdentifier: String? = {
             var mib: [Int32]
             if #available(iOS 17.0, macOS 14.0, watchOS 10.0, tvOS 17.0, *) {
@@ -33,6 +91,10 @@ public extension GlobalInfo {
             return String(cString: resultPtr)
         }()
 
+        public static let systemFamily: Family? = {
+            Family(from: modelIdentifier)
+        }()
+
         public static let isSimulator: Bool = {
             #if targetEnvironment(simulator)
             return true
@@ -44,50 +106,19 @@ public extension GlobalInfo {
         public static let simulatorModelIdentifier: String? = {
             ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"]
         }()
+        public static let simulatorFamily: Family? = {
+            Family(from: simulatorModelIdentifier)
+        }()
 
-        public enum Family {
-            case unknown
-            case airPods
-            case airTag
-            case appleTV
-            case appleVision
-            case homePod
-            case mac
-            case iPad
-            case iPhone
-            case iPod
-            case watch
-        }
-        
         public static let family: Family = {
-            guard var modelIdentifier = Self.modelIdentifier else {
-                return .unknown
+            if isSimulator,
+               let simulatorFamily = simulatorFamily {
+                return simulatorFamily
             }
-            
-            if modelIdentifier == "x86_64" || modelIdentifier == "i386" || modelIdentifier == "arm64" {
-                if let simulatorModelIdentifier = simulatorModelIdentifier {
-                    modelIdentifier = simulatorModelIdentifier
-                } else {
-                    return .mac
-                }
+            if let systemFamily = systemFamily {
+                return systemFamily
             }
-            
-            switch modelIdentifier.prefix(4) {
-                case "AirP", "iPro": return .airPods
-                case "AirT": return .airTag
-                case "Appl": return .appleTV
-                case "Audi": return .homePod
-                case "iPad": return .iPad
-                case "iPho": return .iPhone
-                case "iPod": return .iPod
-                case "Real": return .appleVision
-                case "Watc": return .watch
-                default:
-                    if modelIdentifier.contains("Mac") {
-                        return .mac
-                    }
-                    return .unknown
-            }
+            return .unknown
         }()
     }
 }

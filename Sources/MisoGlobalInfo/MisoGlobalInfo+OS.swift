@@ -75,6 +75,41 @@ public extension GlobalInfo {
             #endif
         }()
 
+        #if os(macOS)
+        private static func macUuid() -> Data? {
+            // https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateLocally.html
+            guard let ethServiceMatching = IOServiceMatching("IOEthernetInterface") as NSMutableDictionary? else {
+                return nil
+            }
+            ethServiceMatching["IOPropertyMatch"] = [ "IOPrimaryInterface" : true ]
+
+            var iterator: io_iterator_t = IO_OBJECT_NULL
+            guard IOServiceGetMatchingServices(kIOMasterPortDefault,
+                                               ethServiceMatching,
+                                               &iterator) == KERN_SUCCESS else {
+                return nil as Data?
+            }
+
+            var result: Data?
+            while result == nil,
+                  let interface = {
+                let next = IOIteratorNext(iterator)
+                return next == IO_OBJECT_NULL ? nil : next
+            }() {
+                var parentService: io_object_t = IO_OBJECT_NULL
+                if IORegistryEntryGetParentEntry(interface, kIOServicePlane, &parentService) == KERN_SUCCESS {
+                    if let retrievedMacAddress = IORegistryEntryCreateCFProperty(parentService, "IOMACAddress" as CFString, kCFAllocatorDefault, 0) {
+                        result = (retrievedMacAddress.takeRetainedValue() as! CFData) as Data
+                    }
+                    IOObjectRelease(parentService)
+                }
+                IOObjectRelease(interface)
+            }
+            IOObjectRelease(iterator)
+            return result as Data?
+        }
+        #endif
+
         // From Apple documentation:
         // When implementing a system for serving advertisements, use the value in the
         // advertisingIdentifier property of the ASIdentifierManager class instead of this
@@ -84,35 +119,9 @@ public extension GlobalInfo {
         @available(watchOS 6.2, *)
         public static let uuid: Data? = {
             #if os(macOS)
-            
-            // https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateLocally.html
-            var masterPort: mach_port_t = UInt32(MACH_PORT_NULL)
-            var iterator: io_iterator_t = UInt32(MACH_PORT_NULL)
-            var macAddress: CFData? = nil
-            guard IOMasterPort(masterPort, &masterPort) == KERN_SUCCESS,
-                let matchingDict = IOBSDNameMatching(masterPort, 0, "en0"),
-                IOServiceGetMatchingServices(masterPort, matchingDict, &iterator) == KERN_SUCCESS
-            else {
-                return nil
-            }
-            var service: io_object_t = UInt32(MACH_PORT_NULL)
-            func nextService() -> Bool {
-                service = IOIteratorNext(iterator)
-                return service != 0
-            }
-            while nextService() {
-                var parentService: io_object_t = UInt32(MACH_PORT_NULL)
-                if IORegistryEntryGetParentEntry(service, kIOServicePlane, &parentService) == KERN_SUCCESS {
-                    macAddress = (IORegistryEntryCreateCFProperty(parentService, "IOMACAddress" as CFString, kCFAllocatorDefault, 0) as! CFData)
-                    IOObjectRelease(parentService)
-                }
-                IOObjectRelease(service)
-            }
-            IOObjectRelease(iterator)
-            return macAddress == nil ? nil : Data(referencing: macAddress!)
-            
+            return macUuid()
             #else
-
+            
             // iOS / watchOS
             #if os(watchOS)
             guard let uuid = WKInterfaceDevice.current().identifierForVendor?.uuid else {
@@ -127,7 +136,7 @@ public extension GlobalInfo {
             let addr = withUnsafePointer(to: uuid) { (p) -> UnsafeRawPointer in
                 UnsafeRawPointer(p)
             }
-            return Data(bytes: addr, count: 16)
+            return Data(bytes: addr, count: 16) as Data?
 
             #endif
         }()

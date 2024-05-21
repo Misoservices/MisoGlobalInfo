@@ -24,7 +24,8 @@ Instead of searching everywhere for the most used variables, these are provided 
 
 - Device is a Simulator: `GlobalInfo.HW.isSimulator`
 - Device code name: `GlobalInfo.HW.modelIdentifier`, `GlobalInfo.HW.simulatorModelIdentifier`
-- Device family name (iPhone, iPad, ...): `GlobalInfo.HW.family`
+- Device family name (iPhone, iPad, ...): `GlobalInfo.HW.family`, `GlobalInfo.HW.systemFamily`,
+  `GlobalInfo.HW.simulatorFamily`
 
 ### Software environment
 
@@ -45,6 +46,10 @@ Instead of searching everywhere for the most used variables, these are provided 
   `Logger.logAppContextOnce()`
 
 ## Version History
+
+### 1.0.7
+
+- Added basic tests. Fixed macOS OS.uuid. Improved HW family facilities. 
 
 ### 1.0.6
 
