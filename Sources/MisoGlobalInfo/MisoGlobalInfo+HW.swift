@@ -12,15 +12,13 @@ import MachO
 
 public extension GlobalInfo {
     struct HW {
-        public static let architecture: String? = {
-            guard let arch = NXGetLocalArchInfo().pointee.name else {
-                return nil
-            }
-            return String(cString: arch)
-        }()
-
         public static let modelIdentifier: String? = {
-            var mib = [CTL_HW, HW_MACHINE]
+            var mib: [Int32]
+            if #available(iOS 17.0, macOS 14.0, watchOS 10.0, tvOS 17.0, *) {
+                mib = [CTL_HW, HW_PRODUCT]
+            } else {
+                mib = [CTL_HW, HW_MACHINE]
+            }
             var size = 0
             guard sysctl(&mib, CUnsignedInt(mib.count), nil, &size, nil, 0) == 0,
                   size > 0 && size <= 64 else {
@@ -35,22 +33,26 @@ public extension GlobalInfo {
             return String(cString: resultPtr)
         }()
 
-        public static var isSimulator: Bool {
+        public static let isSimulator: Bool = {
             #if targetEnvironment(simulator)
             return true
             #else
             return false
             #endif
-        }
+        }()
 
-        public static var simulatorModelIdentifier: String? {
+        public static let simulatorModelIdentifier: String? = {
             ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"]
-        }
+        }()
 
         public enum Family {
             case unknown
-            case mac
+            case airPods
+            case airTag
             case appleTV
+            case appleVision
+            case homePod
+            case mac
             case iPad
             case iPhone
             case iPod
@@ -70,20 +72,21 @@ public extension GlobalInfo {
                 }
             }
             
-            if modelIdentifier.starts(with: "AppleTV") {
-                return .appleTV
-            } else if modelIdentifier.starts(with: "iPad") {
-                return .iPad
-            } else if modelIdentifier.starts(with: "iPhone") {
-                return .iPhone
-            } else if modelIdentifier.starts(with: "iPod") {
-                return .iPod
-            } else if modelIdentifier.starts(with: "Watch") {
-                return .watch
-            } else if modelIdentifier.contains("Mac") {
-                return .mac
-            } else {
-                return .unknown
+            switch modelIdentifier.prefix(4) {
+                case "AirP", "iPro": return .airPods
+                case "AirT": return .airTag
+                case "Appl": return .appleTV
+                case "Audi": return .homePod
+                case "iPad": return .iPad
+                case "iPho": return .iPhone
+                case "iPod": return .iPod
+                case "Real": return .appleVision
+                case "Watc": return .watch
+                default:
+                    if modelIdentifier.contains("Mac") {
+                        return .mac
+                    }
+                    return .unknown
             }
         }()
     }

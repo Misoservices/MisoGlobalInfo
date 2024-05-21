@@ -40,7 +40,6 @@ public extension Logger {
         \((GlobalInfo.App.isRosetta ?? false) ? ", Rosetta" : "", privacy: .public)) \
         on \(GlobalInfo.HW.isSimulator ? "Simulated " : "", privacy: .public)\
         \(GlobalInfo.HW.modelIdentifier ?? "[Unknown model]", privacy: .public) \
-        (\(GlobalInfo.HW.architecture ?? "Unknown architecture", privacy: .public)) \
         running \(GlobalInfo.OS.localizedVersion, privacy: .public) \
         [\(GlobalInfo.OS.majorVersion, privacy: .public)\
         .\(GlobalInfo.OS.minorVersion, privacy: .public)\

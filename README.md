@@ -22,7 +22,6 @@ Instead of searching everywhere for the most used variables, these are provided 
 
 ### Hardware environment
 
-- Device architecture: `GlobalInfo.HW.architecture`
 - Device is a Simulator: `GlobalInfo.HW.isSimulator`
 - Device code name: `GlobalInfo.HW.modelIdentifier`, `GlobalInfo.HW.simulatorModelIdentifier`
 - Device family name (iPhone, iPad, ...): `GlobalInfo.HW.family`
@@ -46,6 +45,10 @@ Instead of searching everywhere for the most used variables, these are provided 
   `Logger.logAppContextOnce()`
 
 ## Version History
+
+### 1.0.6
+
+- Removing Architecture (Private API; Deprecated). Using HW_PRODUCT. Added Apple Vision family.
 
 ### 1.0.5
 
