@@ -84,7 +84,7 @@ public extension GlobalInfo {
             ethServiceMatching["IOPropertyMatch"] = [ "IOPrimaryInterface" : true ]
 
             var iterator: io_iterator_t = IO_OBJECT_NULL
-            guard IOServiceGetMatchingServices(kIOMasterPortDefault,
+            guard IOServiceGetMatchingServices(kIOMainPortDefault,
                                                ethServiceMatching,
                                                &iterator) == KERN_SUCCESS else {
                 return nil as Data?
